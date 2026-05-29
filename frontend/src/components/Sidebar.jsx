@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { useSocket } from "../context/SocketContext";
 import { useToast } from "../context/ToastContext";
 import UserListItem from "./UserListItem";
 
 const Sidebar = ({ selectedUser, onSelectUser, theme, onToggleTheme }) => {
   const { user, logout } = useAuth();
+  const { onlineUsers } = useSocket();
   const { showToast } = useToast();
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -41,15 +43,20 @@ const Sidebar = ({ selectedUser, onSelectUser, theme, onToggleTheme }) => {
     };
   }, [showToast]);
 
+  const activeUsers = useMemo(() => {
+    const onlineUserIds = new Set(onlineUsers.map(Number));
+    return users.filter((contact) => onlineUserIds.has(Number(contact.id)));
+  }, [onlineUsers, users]);
+
   const filteredUsers = useMemo(() => {
     const value = search.trim().toLowerCase();
 
     if (!value) {
-      return users;
+      return activeUsers;
     }
 
-    return users.filter((contact) => contact.name.toLowerCase().includes(value));
-  }, [search, users]);
+    return activeUsers.filter((contact) => contact.name.toLowerCase().includes(value));
+  }, [activeUsers, search]);
 
   return (
     <aside className="sidebar">
@@ -101,7 +108,9 @@ const Sidebar = ({ selectedUser, onSelectUser, theme, onToggleTheme }) => {
             />
           ))}
         {!loadingUsers && filteredUsers.length === 0 && (
-          <div className="list-state">No users found</div>
+          <div className="list-state">
+            {search.trim() ? "No active users found" : "No active users online"}
+          </div>
         )}
       </div>
     </aside>
