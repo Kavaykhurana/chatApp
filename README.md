@@ -60,6 +60,7 @@ Backend variables:
 | `DB_NAME` | PostgreSQL database name. |
 | `DATABASE_URL` | Optional hosted PostgreSQL connection string, useful for Supabase and Render. |
 | `DB_SSL` | Set to `true` for hosted databases requiring SSL. |
+| `DB_SCHEMA` | Optional PostgreSQL schema. Use `chat_app` when sharing an existing Supabase project safely. |
 | `JWT_SECRET` | Long random secret used to sign JWTs. |
 | `JWT_EXPIRES_IN` | JWT lifetime, for example `7d`. |
 | `CLIENT_URL` | Frontend origin allowed by CORS and Socket.io. Use a comma-separated list for local plus deployed origins. |
@@ -132,12 +133,14 @@ Authorization: Bearer <token>
 
 ### Supabase PostgreSQL
 
-1. Create a Supabase project.
-2. Open the SQL editor and run `backend/sql/schema.sql`.
-3. Copy the project database connection string.
-4. Set backend environment variables:
+1. Create a Supabase project, or use a dedicated schema in an existing project.
+2. For a dedicated project, open the SQL editor and run `backend/sql/schema.sql`.
+3. For an existing shared project, run `backend/sql/supabase-chat-app-schema.sql` and set `DB_SCHEMA=chat_app` on the backend.
+4. Copy the project database connection string.
+5. Set backend environment variables:
    - `DATABASE_URL=<supabase_connection_string>`
    - `DB_SSL=true`
+   - `DB_SCHEMA=chat_app` if you used the shared-project schema file
 
 The app uses its own JWT authentication and database tables. It does not use Supabase Auth or Supabase Realtime.
 
@@ -148,6 +151,7 @@ The app uses its own JWT authentication and database tables. It does not use Sup
 3. Add `DATABASE_URL` from Supabase.
 4. Set `CLIENT_URL` to the deployed frontend origin. To support local and production at the same time, use a comma-separated value such as `http://localhost:5173,https://your-app.vercel.app`.
 5. Keep `DB_SSL=true` for Supabase.
+6. Keep `DB_SCHEMA=chat_app` if the schema was applied to an existing Supabase project.
 
 ### Vercel Frontend
 

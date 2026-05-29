@@ -13,6 +13,8 @@ services:
         value: 5000
       - key: DB_SSL
         value: true
+      - key: DB_SCHEMA
+        value: chat_app
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: DATABASE_URL

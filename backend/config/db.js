@@ -8,6 +8,9 @@ const { Pool } = pg;
 const useConnectionString = Boolean(process.env.DATABASE_URL);
 const shouldUseSsl =
   process.env.DB_SSL === "true" || (useConnectionString && process.env.DB_SSL !== "false");
+const schemaName = process.env.DB_SCHEMA?.trim();
+
+const quoteIdentifier = (identifier) => `"${identifier.replaceAll('"', '""')}"`;
 
 const pool = new Pool(
   useConnectionString
@@ -24,6 +27,12 @@ const pool = new Pool(
         ssl: shouldUseSsl ? { rejectUnauthorized: false } : false,
       },
 );
+
+if (schemaName) {
+  pool.on("connect", (client) => {
+    client.query(`SET search_path TO ${quoteIdentifier(schemaName)}, public`);
+  });
+}
 
 export const query = (text, params) => pool.query(text, params);
 export default pool;
