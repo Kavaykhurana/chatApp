@@ -143,12 +143,11 @@ The app uses its own JWT authentication and database tables. It does not use Sup
 
 ### Render Backend
 
-1. Create a new Web Service from the GitHub repository.
-2. Set root directory to `backend`.
-3. Build command: `npm install`.
-4. Start command: `npm start`.
-5. Add all backend environment variables from `.env.example`.
-6. Set `CLIENT_URL` to the deployed frontend origin. To support local and production at the same time, use a comma-separated value such as `http://localhost:5173,https://your-app.vercel.app`.
+1. Create a new Blueprint or Web Service from the GitHub repository.
+2. If using the included `render.yaml`, Render reads `rootDir: backend`, `buildCommand: npm install`, and `startCommand: npm start`.
+3. Add `DATABASE_URL` from Supabase.
+4. Set `CLIENT_URL` to the deployed frontend origin. To support local and production at the same time, use a comma-separated value such as `http://localhost:5173,https://your-app.vercel.app`.
+5. Keep `DB_SSL=true` for Supabase.
 
 ### Vercel Frontend
 
