@@ -23,6 +23,27 @@ The application is intentionally focused on private direct messaging. It does no
 - Backend health check: [https://backend-production-98b4.up.railway.app/health](https://backend-production-98b4.up.railway.app/health)
 - Repository: [https://github.com/Kavaykhurana/chatApp](https://github.com/Kavaykhurana/chatApp)
 
+## Current Deployment
+
+| Layer | Platform | Details |
+| --- | --- | --- |
+| Frontend | Netlify | Live URL: `https://chatapp-kavay.netlify.app`; build command: `npm run build`; publish directory: `frontend/dist`; config: `netlify.toml`. |
+| Backend | Railway | Live URL: `https://backend-production-98b4.up.railway.app`; health check: `/health`; root directory: `backend`; start command: `npm start`. |
+| Database | Supabase PostgreSQL | Project name: `chatApp`; region: `ap-south-1`; app tables: `users` and `messages`; app schema can be isolated with `DB_SCHEMA=chat_app`. |
+| Source Control | GitHub | Repository: `https://github.com/Kavaykhurana/chatApp`; branch: `main`. |
+
+Production environment values:
+
+| Service | Variable | Value |
+| --- | --- | --- |
+| Frontend | `VITE_API_URL` | `https://backend-production-98b4.up.railway.app/api` |
+| Frontend | `VITE_SOCKET_URL` | `https://backend-production-98b4.up.railway.app` |
+| Backend | `CLIENT_URL` | `https://chatapp-kavay.netlify.app` |
+| Backend | `DB_SSL` | `true` |
+| Backend | `JWT_EXPIRES_IN` | `7d` |
+
+Secret values such as `DATABASE_URL` and `JWT_SECRET` must be set in Railway or the deployment platform environment and should not be committed.
+
 ## How To Use
 
 1. Open the live frontend.
@@ -36,10 +57,15 @@ To test alone, open the app in two browser profiles or one normal window plus on
 
 ## Tech Stack
 
-- Frontend: React, Vite, Context API, Axios, Socket.io Client, plain CSS
-- Backend: Node.js, Express.js, Socket.io, JWT, bcryptjs
-- Database: PostgreSQL, compatible with Supabase Postgres
-- Deployment targets: Railway or Render for backend, Vercel or Netlify for frontend, Supabase for PostgreSQL
+| Area | Technologies |
+| --- | --- |
+| Frontend | React, Vite, React Router, Context API, `useState`, `useEffect`, Axios, Socket.io Client |
+| Styling | Plain CSS, CSS custom properties, responsive media queries, dark mode class on `body` |
+| Backend | Node.js, Express.js, Socket.io, JWT, bcryptjs |
+| Database | PostgreSQL, Supabase PostgreSQL, SQL schema files, indexed message queries |
+| Authentication | JWT bearer tokens, bcrypt password hashing, localStorage session restore |
+| Deployment | Netlify for frontend, Railway for backend, Supabase for PostgreSQL, GitHub for source control |
+| Tooling | npm scripts, Vite production build, Netlify config, Render blueprint |
 
 ## Project Structure
 
