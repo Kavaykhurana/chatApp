@@ -1,32 +1,65 @@
 # ChatApp
 
-ChatApp is a full-stack one-to-one real-time chat application built with React, Vite, Node.js, Express.js, Socket.io, and PostgreSQL. It includes JWT authentication, online user status, typing indicators, chat history, read receipts, dark mode, and responsive mobile navigation.
+ChatApp is a full-stack one-to-one real-time chat application built with React, Vite, Node.js, Express.js, Socket.io, and PostgreSQL. It includes JWT authentication, online user status, typing indicators, persisted chat history, read receipts, dark mode, toast notifications, and responsive mobile navigation.
+
+## Live Deployment
+
+- Frontend: [https://chatapp-kavay.netlify.app](https://chatapp-kavay.netlify.app)
+- Backend health check: [https://backend-production-98b4.up.railway.app/health](https://backend-production-98b4.up.railway.app/health)
+- Repository: [https://github.com/Kavaykhurana/chatApp](https://github.com/Kavaykhurana/chatApp)
 
 ## Tech Stack
 
 - Frontend: React, Vite, Context API, Axios, Socket.io Client, plain CSS
 - Backend: Node.js, Express.js, Socket.io, JWT, bcryptjs
 - Database: PostgreSQL, compatible with Supabase Postgres
-- Deployment targets: Render for backend, Vercel or Netlify for frontend, Supabase for PostgreSQL
+- Deployment targets: Railway or Render for backend, Vercel or Netlify for frontend, Supabase for PostgreSQL
 
 ## Project Structure
 
 ```text
 chatApp/
 ├── backend/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── routes/
 │   ├── config/
+│   │   ├── cors.js
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   └── messageController.js
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   └── errorMiddleware.js
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   └── messageRoutes.js
 │   ├── socket/
+│   │   └── socketHandler.js
 │   ├── sql/
+│   │   ├── schema.sql
+│   │   └── supabase-chat-app-schema.sql
 │   ├── .env.example
-│   ├── server.js
-│   └── package.json
+│   ├── package.json
+│   └── server.js
+├── docs/
+│   └── screenshots/
+│       ├── chat.png
+│       └── login.png
 ├── frontend/
+│   ├── public/
 │   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
 │   ├── .env.example
-│   └── package.json
+│   ├── package.json
+│   └── vite.config.js
+├── netlify.toml
+├── render.yaml
 └── README.md
 ```
 
@@ -144,6 +177,21 @@ Authorization: Bearer <token>
 
 The app uses its own JWT authentication and database tables. It does not use Supabase Auth or Supabase Realtime.
 
+### Railway Backend
+
+1. Create a Railway project and deploy the `backend` directory.
+2. Set the start command to `npm start`.
+3. Add the hosted PostgreSQL variables:
+   - `DATABASE_URL=<supabase_connection_string>`
+   - `DB_SSL=true`
+   - `DB_SCHEMA=chat_app` if the shared Supabase schema file was used
+4. Add authentication and client variables:
+   - `JWT_SECRET=<strong_random_secret>`
+   - `JWT_EXPIRES_IN=7d`
+   - `CLIENT_URL=<deployed_frontend_origin>`
+   - `NODE_ENV=production`
+5. Generate a Railway public domain and use it for the frontend `VITE_API_URL` and `VITE_SOCKET_URL`.
+
 ### Render Backend
 
 1. Create a new Blueprint or Web Service from the GitHub repository.
@@ -171,10 +219,10 @@ The app uses its own JWT authentication and database tables. It does not use Sup
 
 ## Screenshots
 
-Add screenshots after deployment:
+### Login
 
-- Login page
-- Register page
-- Desktop chat layout
-- Mobile sidebar
-- Mobile conversation view
+![Login page](docs/screenshots/login.png)
+
+### Real-Time Chat
+
+![Desktop chat layout](docs/screenshots/chat.png)
