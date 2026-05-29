@@ -1,12 +1,38 @@
 # ChatApp
 
-ChatApp is a full-stack one-to-one real-time chat application built with React, Vite, Node.js, Express.js, Socket.io, and PostgreSQL. It includes JWT authentication, online user status, typing indicators, persisted chat history, read receipts, dark mode, toast notifications, and responsive mobile navigation.
+ChatApp is a deployed full-stack one-to-one real-time chat application for direct human-to-human messaging. It is built with React, Vite, Node.js, Express.js, Socket.io, and PostgreSQL, with JWT authentication, active contact discovery, typing indicators, persisted chat history, read receipts, dark mode, toast notifications, and responsive mobile navigation.
+
+The application is intentionally focused on private direct messaging. It does not include group chats, file sharing, calls, reactions, push notifications, model API integrations, or additional queue/cache infrastructure.
+
+## Key Features
+
+- Register, login, logout, and restore sessions from local storage.
+- One-to-one messaging with messages persisted in PostgreSQL.
+- Real-time message delivery through Socket.io when both users are online.
+- Sidebar contact list shows only currently active online users.
+- Search filters active contacts instantly on the client.
+- Online/offline indicators, typing indicators, read receipts, and timestamps.
+- Chat history loads in chronological order with date separators.
+- Dark mode preference is stored locally and applied on reload.
+- Toast notifications for auth, logout, send failures, and network errors.
+- Responsive layout switches between sidebar and chat view on mobile.
 
 ## Live Deployment
 
 - Frontend: [https://chatapp-kavay.netlify.app](https://chatapp-kavay.netlify.app)
 - Backend health check: [https://backend-production-98b4.up.railway.app/health](https://backend-production-98b4.up.railway.app/health)
 - Repository: [https://github.com/Kavaykhurana/chatApp](https://github.com/Kavaykhurana/chatApp)
+
+## How To Use
+
+1. Open the live frontend.
+2. Register or log in.
+3. Ask another person to register and stay online.
+4. Their account appears in the sidebar only while they are active.
+5. Select their name and send a message.
+6. If they are online, messages, typing status, and read updates appear in real time.
+
+To test alone, open the app in two browser profiles or one normal window plus one private/incognito window. Register a different account in each window, then send messages between them.
 
 ## Tech Stack
 
@@ -56,6 +82,7 @@ chatApp/
 │   │   ├── index.css
 │   │   └── main.jsx
 │   ├── .env.example
+│   ├── .env.production
 │   ├── package.json
 │   └── vite.config.js
 ├── netlify.toml
@@ -113,6 +140,8 @@ Frontend variables:
 | `VITE_API_URL` | Backend API base URL ending in `/api`. |
 | `VITE_SOCKET_URL` | Backend Socket.io server URL. |
 
+Production defaults are committed in `frontend/.env.production` and mirrored in `netlify.toml` so production builds point at the deployed Railway backend instead of local URLs.
+
 ### 4. Install and run backend
 
 ```bash
@@ -137,7 +166,7 @@ Open the Vite URL shown in the terminal.
 | --- | --- | --- | --- | --- |
 | `POST` | `/api/auth/register` | No | Register a user and return JWT plus user info. | `{ "name": "Ava", "email": "ava@example.com", "password": "secret12" }` |
 | `POST` | `/api/auth/login` | No | Log in and return JWT plus user info. | `{ "email": "ava@example.com", "password": "secret12" }` |
-| `GET` | `/api/messages/users` | Yes | Return all users except the authenticated user. | None |
+| `GET` | `/api/messages/users` | Yes | Return all users except the authenticated user. The frontend displays only users currently reported online by Socket.io. | None |
 | `GET` | `/api/messages/:userId` | Yes | Return full chat history with selected user, ordered oldest first. | None |
 | `POST` | `/api/messages/send/:receiverId` | Yes | Persist a message and emit `newMessage` to the receiver if online. | `{ "message": "Hello" }` |
 | `PATCH` | `/api/messages/read/:userId` | Yes | Mark unread messages from a sender as read. | None |
@@ -215,7 +244,20 @@ The app uses its own JWT authentication and database tables. It does not use Sup
 2. Base directory: `frontend`.
 3. Build command: `npm run build`.
 4. Publish directory: `frontend/dist`.
-5. Add `VITE_API_URL` and `VITE_SOCKET_URL` pointing to the deployed backend.
+5. Keep `VITE_API_URL` and `VITE_SOCKET_URL` in `netlify.toml` pointed at the deployed backend.
+
+## Verification
+
+The deployed application has been checked against the public Netlify and Railway URLs. The verification covered:
+
+- Frontend production build with `npm run build`.
+- Railway backend health endpoint.
+- Register/login/logout and JWT-protected routes.
+- Active-only contact rendering.
+- Sidebar search empty state.
+- Real-time Socket.io connection, online user broadcast, typing, stop typing, and new message delivery.
+- Message persistence, chat history, and read receipt updates.
+- Dark mode toggle and responsive mobile sidebar/chat navigation.
 
 ## Screenshots
 
